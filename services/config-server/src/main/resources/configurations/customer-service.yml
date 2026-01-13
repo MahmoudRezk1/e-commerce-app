@@ -1,0 +1,9 @@
+spring:
+  mongodb:
+    username: barakat
+    password: barakat
+    additional-hosts: localhost
+    port: 27017
+    authentication-database: admin
+server:
+  port: 8090
