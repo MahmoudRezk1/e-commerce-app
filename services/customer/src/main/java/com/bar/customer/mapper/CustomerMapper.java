@@ -1,6 +1,7 @@
 package com.bar.customer.mapper;
 
 import com.bar.customer.dto.CustomerRequest;
+import com.bar.customer.dto.CustomerResponse;
 import com.bar.customer.entity.Customer;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
@@ -15,5 +16,15 @@ public class CustomerMapper {
                 .email(customerRequest.email())
                 .address(customerRequest.address())
                 .build();
+    }
+
+    public CustomerResponse fromCustomer(Customer customer) {
+        return new CustomerResponse(
+                customer.getId(),
+                customer.getFirstName(),
+                customer.getLastName(),
+                customer.getEmail(),
+                customer.getAddress()
+        );
     }
 }
