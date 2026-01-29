@@ -1,10 +1,12 @@
 package com.bar.order.service.order;
 
 import com.bar.order.clients.CustomerClient;
+import com.bar.order.clients.PaymentClient;
 import com.bar.order.clients.ProductClient;
 import com.bar.order.dto.order.OrderRequest;
 import com.bar.order.dto.order.OrderResponse;
 import com.bar.order.dto.orderline.OrderLineRequest;
+import com.bar.order.dto.payment.PaymentRequest;
 import com.bar.order.dto.product.PurchaseRequest;
 import com.bar.order.exception.BusinessException;
 import com.bar.order.kafka.OrderConfirmation;
@@ -22,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private final PaymentClient paymentClient;
     private final OrderRepository repository;
     private final CustomerClient customerClient;
     private final ProductClient productClient;
@@ -50,8 +53,14 @@ public class OrderService {
                     purchaseRequest.quantity()
             ));
         }
-        // todo start the payment
-
+        // start the payment
+        this.paymentClient.requestOrderPayment(new PaymentRequest(
+                request.amount(),
+                request.paymentMethod(),
+                request.id(),
+                request.reference(),
+                customer
+        ));
         //send the order confirmation --> notification-ms (Kafka)
         this.orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
